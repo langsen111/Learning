@@ -134,9 +134,9 @@ type Block struct {
 
 	// Td is used by package core to store the total difficulty
 	// of the chain up to and including the block.
-	td *big.Int    // 难度系数综合
+	td *big.Int    //难度系数综合
 
-	// These fields are used by package eth to track  //打包
+	// These fields are used by package eth to track  //打包字段
 	// inter-peer block relay.
 	ReceivedAt   time.Time
 	ReceivedFrom interface{}   //块体（Body）

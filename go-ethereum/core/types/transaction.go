@@ -57,7 +57,7 @@ type txdata struct {
 	R *big.Int `json:"r" gencodec:"required"`
 	S *big.Int `json:"s" gencodec:"required"`
 
-	// This is only used when marshaling to JSON.
+	// This is only used when marshaling to JSON.     //本次交易的哈希
 	Hash *common.Hash `json:"hash" rlp:"-"`
 }
 
@@ -219,7 +219,7 @@ func (tx *Transaction) Size() common.StorageSize {
 //
 // XXX Rename message to something less arbitrary?
 func (tx *Transaction) AsMessage(s Signer) (Message, error) {        //消息封装
-	msg := Message{    //对象
+	msg := Message{                              //对象
 		nonce:      tx.data.AccountNonce,
 		gasLimit:   tx.data.GasLimit,
 		gasPrice:   new(big.Int).Set(tx.data.Price),

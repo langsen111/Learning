@@ -48,7 +48,7 @@ type Receipt struct {                                                           
 	PostState         []byte `json:"root"`                //保存区块中所有"账户"的状态值    /而stateObject表示一个账户
 	Status            uint64 `json:"status"`
 	CumulativeGasUsed uint64 `json:"cumulativeGasUsed" gencodec:"required"`
-	Bloom             Bloom  `json:"logsBloom"         gencodec:"required"`       //bloom过滤器， bloom filter
+	Bloom             Bloom  `json:"logsBloom"         gencodec:"required"`       //bloom过滤器， bloom filter  判断日志是否在log日志组里
 	Logs              []*Log `json:"logs"              gencodec:"required"`         //日志组
 
 	// Implementation fields (don't reorder!)

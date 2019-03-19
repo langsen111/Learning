@@ -53,7 +53,7 @@ func max(x, y int) int {
 	return y
 }
 
-type block struct {
+ {
 	bpool          *util.BufferPool
 	bh             blockHandle
 	data           []byte

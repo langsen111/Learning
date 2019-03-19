@@ -135,7 +135,7 @@ func (n *Node) Register(constructor ServiceConstructor) error {
 }
 
 // Start create a live P2P node and starts running it.   //开启运行一个p2p节点
-//大致思路：将服务注册到节点里面，然后从节点里买呢取出服务，放入p2p.server里面，再用p2p.server来运行
+//大致思路：将服务注册到节点里面，然后从节点里取出服务，放入p2p.server里面，再用p2p.server来运行
 func (n *Node) Start() error {
 	n.lock.Lock()
 	defer n.lock.Unlock()
@@ -186,7 +186,7 @@ func (n *Node) Start() error {
 		if err != nil {
 			return err
 		}
-		kind := reflect.TypeOf(service)               //把service反射成一个类型
+		kind := reflect.TypeOf(service)               //把service反射成一个类型，
 		if _, exists := services[kind]; exists {
 			return &DuplicateServiceError{Kind: kind}
 		}

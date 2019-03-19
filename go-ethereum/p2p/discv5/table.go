@@ -40,9 +40,10 @@ const (
 
 	maxFindnodeFailures = 5
 )
-
+//路由表，相当于当前节点的通讯录，记录准备通讯的节点
 type Table struct {
 	count         int               // number of nodes
+	//K桶
 	buckets       [nBuckets]*bucket // index of known nodes by distance
 	nodeAddedHook func(*Node)       // for testing
 	self          *Node             // metadata of the local node
@@ -58,7 +59,7 @@ type bucket struct {
 func newTable(ourID NodeID, ourAddr *net.UDPAddr) *Table {
 	self := NewNode(ourID, ourAddr.IP, uint16(ourAddr.Port), uint16(ourAddr.Port))
 	tab := &Table{self: self}
-	for i := range tab.buckets {
+	for i := range tab.buckets {   //初始化木桶
 		tab.buckets[i] = new(bucket)
 	}
 	return tab

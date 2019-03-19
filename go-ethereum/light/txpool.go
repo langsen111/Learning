@@ -325,7 +325,7 @@ func (pool *TxPool) Stop() {
 
 // SubscribeNewTxsEvent registers a subscription of core.NewTxsEvent and
 // starts sending event to the given channel.
-func (pool *TxPool) SubscribeNewTxsEvent(ch chan<- core.NewTxsEvent) event.Subscription {
+event.Subscription {
 	return pool.scope.Track(pool.txFeed.Subscribe(ch))
 }
 

@@ -199,7 +199,7 @@ type PendingContractCaller interface {
 // GasEstimator wraps EstimateGas, which tries to estimate the gas needed to execute a
 // specific transaction based on the pending state. There is no guarantee that this is the
 // true gas limit requirement as other transactions may be added or removed by miners, but
-// it should provide a basis for setting a reasonable default.
+// it should provide a basis for setting a reasonable default.234567
 type GasEstimator interface {
 	EstimateGas(ctx context.Context, call CallMsg) (uint64, error)
 }

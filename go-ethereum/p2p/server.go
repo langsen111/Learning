@@ -615,8 +615,8 @@ func (srv *Server) run(dialstate dialer) {
 		inboundCount = 0
 		trusted      = make(map[enode.ID]bool, len(srv.TrustedNodes))
 		taskdone     = make(chan task, maxActiveDialTasks)
-		runningTasks []task
-		queuedTasks  []task // tasks that can't run yet
+		runningTasks []task                                       //正在执行的任务
+		queuedTasks  []task // tasks that can't run yet              //尚未执行的任务
 	)
 	// Put trusted nodes into a map to speed up checks.
 	// Trusted peers are loaded on startup or added via AddTrustedPeer RPC.
@@ -656,21 +656,22 @@ func (srv *Server) run(dialstate dialer) {
 
 running:
 	for {
+		//调度开始找生成任务
 		scheduleTasks()
 
 		select {
-		case <-srv.quit:
+		case <-srv.quit: //退出
 			// The server was stopped. Run the cleanup logic.
 			break running
 		case n := <-srv.addstatic:
 			// This channel is used by AddPeer to add to the
-			// ephemeral static peer list. Add it to the dialer,
+			// ephemeral static peer list. Add it to the dialer,//增加一个节点 该节点最终会生成一个dialTask //并在newTasks的时候加入到读列
 			// it will keep the node connected.
 			srv.log.Trace("Adding static node", "node", n)
 			dialstate.addStatic(n)
 		case n := <-srv.removestatic:
 			// This channel is used by RemovePeer to send a
-			// disconnect request to a peer and begin the
+			// disconnect request to a peer and begin the//直接删除该节点 节点 再参与维护，很快就会死掉
 			// stop keeping the node connected.
 			srv.log.Trace("Removing static node", "node", n)
 			dialstate.removeStatic(n)
@@ -698,7 +699,7 @@ running:
 				p.rw.set(trustedConn, false)
 			}
 		case op := <-srv.peerOp:
-			// This channel is used by Peers and PeerCount.
+			// This channel is used by Peers and PeerCount.  // Peers 和 PeerCount 两个外部接 ，只是读取 peer信息
 			op(peers)
 			srv.peerOpDone <- struct{}{}
 		case t := <-taskdone:
@@ -709,8 +710,8 @@ running:
 			dialstate.taskDone(t, time.Now())
 			delTask(t)
 		case c := <-srv.posthandshake:
-			// A connection has passed the encryption handshake so
-			// the remote identity is known (but hasn't been verified yet).
+			// A connection has passed the encryption handshake so//身份验证通过
+			// the remote identity is known (but hasn't been verified yet).//task完成后会根据 同的任务类型进 相应的处
 			if trusted[c.node.ID()] {
 				// Ensure that the trusted flag is set before checking against MaxPeers.
 				c.flags |= trustedConn
@@ -735,7 +736,7 @@ running:
 				}
 				name := truncateName(c.name)
 				srv.log.Debug("Adding p2p peer", "name", name, "addr", c.fd.RemoteAddr(), "peers", len(peers)+1)
-				go srv.runPeer(p)
+				go srv.runPeer(p)                                   //触发事件 此处是最上 层截取peer的位置，如果此物没有外部影响，那么这个peer很快就被销毁
 				peers[c.node.ID()] = p
 				if p.Inbound() {
 					inboundCount++
@@ -750,7 +751,7 @@ running:
 				break running
 			}
 		case pd := <-srv.delpeer:
-			// A peer disconnected.
+			// A peer disconnected.//移除peer
 			d := common.PrettyDuration(mclock.Now() - pd.created)
 			pd.log.Debug("Removing p2p peer", "duration", d, "peers", len(peers)-1, "req", pd.requested, "err", pd.err)
 			delete(peers, pd.ID())

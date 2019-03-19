@@ -743,6 +743,7 @@ func (pool *TxPool) promoteTx(addr common.Address, hash common.Hash, tx *types.T
 	inserted, old := list.Add(tx, pool.config.PriceBump)
 	if !inserted {
 		// An older transaction was better, discard this
+
 		pool.all.Remove(hash)
 		pool.priced.Removed()
 
